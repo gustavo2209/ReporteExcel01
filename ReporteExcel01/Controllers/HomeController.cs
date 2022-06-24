@@ -125,6 +125,38 @@ namespace ReporteExcel01.Controllers
             excelApp.Quit();
         }
 
+        public ActionResult Formulas()
+        {
+            FormulasCrea("C:\\temp\\formulas.xlsx");
+            return File("C:\\temp\\formulas.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Formulas.xlsx");
+        }
+
+        public virtual void FormulasCrea(string doc_excel)
+        {
+            Application excelApp = new Application();
+            Workbook wb = excelApp.Workbooks.Add(XlWBATemplate.xlWBATWorksheet);
+            Worksheet sheet = wb.Sheets.Add();
+            //--------------------------------------------------------------------------
+
+            for(int i = 1; i <= 20; i++)
+            {
+                sheet.Cells[i, 1] = i;
+                sheet.Cells[i, 2] = "=SUM(A1:A" + i + ")";
+                sheet.Cells[i, 4] = "=AVERAGE(A1:A" + i + ")";
+            }
+
+            sheet.Cells[21, 1] = "=SUM(A1:A20)";
+
+            //--------------------------------------------------------------------------
+            wb.SaveAs(doc_excel,
+                 XlFileFormat.xlWorkbookDefault, Type.Missing, Type.Missing,
+                 Type.Missing, Type.Missing, XlSaveAsAccessMode.xlExclusive,
+                 Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+
+            wb.Close();
+            excelApp.Quit();
+        }
+
         public ActionResult Index()
         {
             return View();
